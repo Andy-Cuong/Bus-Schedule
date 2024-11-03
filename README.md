@@ -1,6 +1,6 @@
 # Bus Schedule App
 
-This folder contains the source code for the Bus Schedule app codelab.
+Solution code by learner for the [Bus Schedule app codelab](https://github.com/google-developer-training/basic-android-kotlin-compose-training-bus-schedule-app).
 
 # Introduction
 The Bus Schedule app displays a list of bus stops and arrival times. Tapping a bus stop on the first
