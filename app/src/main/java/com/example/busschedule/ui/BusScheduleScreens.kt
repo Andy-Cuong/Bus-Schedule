@@ -28,9 +28,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Divider
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,7 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -76,7 +76,7 @@ fun BusScheduleApp(
 ) {
     val navController = rememberNavController()
     val fullScheduleTitle = stringResource(R.string.full_schedule)
-    var topAppBarTitle by remember { mutableStateOf(fullScheduleTitle) }
+    var topAppBarTitle by rememberSaveable { mutableStateOf(fullScheduleTitle) }
     val fullSchedule by viewModel.getFullSchedule().collectAsState(emptyList())
     val onBackHandler = {
         topAppBarTitle = fullScheduleTitle
@@ -194,7 +194,7 @@ fun BusScheduleScreen(
             Text(stopNameText)
             Text(stringResource(R.string.arrival_time))
         }
-        Divider()
+        HorizontalDivider()
         BusScheduleDetails(
             contentPadding = PaddingValues(
                 bottom = contentPadding.calculateBottomPadding()
@@ -283,7 +283,7 @@ fun BusScheduleTopAppBar(
             navigationIcon = {
                 IconButton(onClick = onBackClick) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(
                             R.string.back
                         )
@@ -307,9 +307,9 @@ fun FullScheduleScreenPreview() {
         FullScheduleScreen(
             busSchedules = List(3) { index ->
                 BusSchedule(
-                    index,
-                    "Main Street",
-                    111111
+                    id = index,
+                    stopName = "Main Street",
+                    arrivalTimeInMillis = 111111
                 )
             },
             onScheduleClick = {}
@@ -325,9 +325,9 @@ fun RouteScheduleScreenPreview() {
             stopName = "Main Street",
             busSchedules = List(3) { index ->
                 BusSchedule(
-                    index,
-                    "Main Street",
-                    111111
+                    id = index,
+                    stopName = "Main Street",
+                    arrivalTimeInMillis = 111111
                 )
             }
         )

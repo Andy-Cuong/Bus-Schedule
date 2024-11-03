@@ -17,40 +17,51 @@ package com.example.busschedule.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.busschedule.BusScheduleApplication
 import com.example.busschedule.data.BusSchedule
+import com.example.busschedule.data.BusScheduleRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.stateIn
 
-class BusScheduleViewModel: ViewModel() {
+class BusScheduleViewModel(
+    private val busScheduleRepository: BusScheduleRepository
+): ViewModel() {
 
-    // Get example bus schedule
-    fun getFullSchedule(): Flow<List<BusSchedule>> = flowOf(
-        listOf(
-            BusSchedule(
-                1,
-                "Example Street",
-                0
-            )
-        )
-    )
+    // Get full bus schedule
+    fun getFullSchedule(): /*State*/Flow<List<BusSchedule>> =
+        busScheduleRepository.getAllBusSchedulesFlow()
+//            .filterNotNull()
+//            .stateIn(
+//                scope = viewModelScope,
+//                started = SharingStarted.WhileSubscribed(stopTimeoutMillis = TIMEOUT_MILLIS),
+//                initialValue = listOf()
+//            )
 
-    // Get example bus schedule by stop
-    fun getScheduleFor(stopName: String): Flow<List<BusSchedule>> = flowOf(
-        listOf(
-            BusSchedule(
-                1,
-                "Example Street",
-                0
-            )
-        )
-    )
+    // Get  bus schedule by stop
+    fun getScheduleFor(stopName: String): /*State*/Flow<List<BusSchedule>> =
+        busScheduleRepository.getBusScheduleFlowByStop(stopName = stopName)
+//            .filterNotNull()
+//            .stateIn(
+//                scope = viewModelScope,
+//                started = SharingStarted.WhileSubscribed(stopTimeoutMillis = TIMEOUT_MILLIS),
+//                initialValue = listOf()
+//            )
 
     companion object {
+        const val TIMEOUT_MILLIS = 5000L
+
         val factory : ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                BusScheduleViewModel()
+                val application = this[APPLICATION_KEY] as BusScheduleApplication
+                val busScheduleRepository = application.container.busScheduleRepository
+                BusScheduleViewModel(busScheduleRepository = busScheduleRepository)
             }
         }
     }
